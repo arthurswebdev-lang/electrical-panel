@@ -14,8 +14,15 @@
   --plastic-edge: #b9b9b4;
   --paper: #fffef8;
 
-  /* one DIN module width; 12 modules + enclosure padding must fit the screen */
-  --m: clamp(20px, calc((100vw - 40px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 13.6), 60px);
+  /* free screen height for the panel (page padding + safe areas removed) */
+  --vh: 100vh;
+  --avail-h: calc(var(--vh) - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  /* one DIN module width. The panel is 13.6 modules wide and about
+     23.8 modules tall, so it must fit both the screen width and height:
+     no scrolling. */
+  --m-w: calc((100vw - 40px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 13.6);
+  --m-h: calc(var(--avail-h) / 23.8);
+  --m: clamp(16px, min(var(--m-w), var(--m-h)), 60px);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --page: #1c1c1b; --ink: #f0efeb; --muted: #a5a39d; --card: #2a2a28; --line: #44433f; }
@@ -31,9 +38,9 @@ body {
   font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   /* keep clear of the notch / Dynamic Island and the home indicator */
   padding:
-    calc(20px + env(safe-area-inset-top, 0px))
+    calc(8px + env(safe-area-inset-top, 0px))
     calc(16px + env(safe-area-inset-right, 0px))
-    calc(40px + env(safe-area-inset-bottom, 0px))
+    calc(8px + env(safe-area-inset-bottom, 0px))
     calc(16px + env(safe-area-inset-left, 0px));
   touch-action: manipulation; /* no double-tap zoom */
 }
@@ -67,20 +74,20 @@ body {
   padding-block: calc(var(--m) * .45);
   display: flex; flex-direction: column; gap: calc(var(--m) * .35);
   background-image:
-    radial-gradient(circle, #555 0 3px, transparent 4px),
-    radial-gradient(circle, #555 0 3px, transparent 4px),
-    radial-gradient(circle, #555 0 3px, transparent 4px),
-    radial-gradient(circle, #555 0 3px, transparent 4px);
-  background-size: 12px 12px;
+    radial-gradient(circle, #555 0 2.5px, transparent 3.5px),
+    radial-gradient(circle, #555 0 2.5px, transparent 3.5px),
+    radial-gradient(circle, #555 0 2.5px, transparent 3.5px),
+    radial-gradient(circle, #555 0 2.5px, transparent 3.5px);
+  background-size: 10px 10px;
   background-repeat: no-repeat;
-  background-position: 8% 4px, 92% 4px, 8% calc(100% - 4px), 92% calc(100% - 4px);
+  background-position: 3px 3px, calc(100% - 3px) 3px, 3px calc(100% - 3px), calc(100% - 3px) calc(100% - 3px);
 }
 
 /* ---------- one DIN row ---------- */
 .row { position: relative; display: flex; align-items: flex-start; }
 .rail {
   position: absolute; left: -4px; right: -4px;
-  top: calc(var(--m) * .35 + var(--m) * 2.3 - var(--m) * .3);
+  top: calc(var(--m) * .35 + var(--m) * 1.5 - var(--m) * .3);
   height: calc(var(--m) * .6);
   background: repeating-linear-gradient(90deg, #c9ccd0 0 14px, #9fa4aa 14px 16px);
   border-top: 2px solid #aeb2b7; border-bottom: 2px solid #8d9298;
@@ -110,7 +117,7 @@ body {
 /* ---------- device body ---------- */
 .mod {
   width: calc(100% - 1px);
-  height: calc(var(--m) * 4.6);
+  height: calc(var(--m) * 3);
   background: linear-gradient(90deg, var(--plastic-2), var(--plastic) 20%, var(--plastic) 80%, var(--plastic-2));
   border: 1px solid var(--plastic-edge);
   border-radius: 3px;
@@ -118,26 +125,12 @@ body {
   position: relative;
   box-shadow: 0 2px 3px rgba(0,0,0,.15);
 }
-.term {
-  height: calc(var(--m) * .8);
-  display: flex; justify-content: space-evenly; align-items: center;
-  background: linear-gradient(#efefec, #dcdcd8);
-  font-size: clamp(7px, calc(var(--m) * .2), 11px); color: #555; font-weight: 700;
-}
-.term:first-child { border-bottom: 1px solid var(--plastic-edge); border-radius: 3px 3px 0 0; }
-.term:last-child  { border-top: 1px solid var(--plastic-edge); border-radius: 0 0 3px 3px; }
-.term i {
-  width: calc(var(--m) * .42); height: calc(var(--m) * .42); border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #f4f4f4, #9a9a9a);
-  border: 1px solid #888; position: relative;
-}
-.term i::after { content: ""; position: absolute; inset: 45% 15%; background: #666; }
 
 .face {
   flex: 1; position: relative;
   display: flex; flex-direction: column; align-items: center;
-  padding-top: calc(var(--m) * .5);
-  gap: calc(var(--m) * .14);
+  padding-top: calc(var(--m) * .48);
+  gap: calc(var(--m) * .1);
 }
 .face::before { /* ABB red band */
   content: "ABB"; position: absolute; top: calc(var(--m) * .08); left: 0; right: 0;
@@ -158,7 +151,7 @@ body {
    handle at the top = ON, handle at the bottom = OFF */
 .tg {
   --rib: max(2px, calc(var(--m) * .07));
-  width: calc(var(--m) * .46); height: calc(var(--m) * 1.25);
+  width: calc(var(--m) * .46); height: calc(var(--m) * 1.1);
   background: #c0c0c0;
   border: 1.5px solid #1e1e1e;
   position: relative;
@@ -181,7 +174,7 @@ body {
 }
 
 .body { display: flex; align-items: center; gap: calc(var(--m) * .3); }
-.body .col { display: flex; flex-direction: column; align-items: center; gap: calc(var(--m) * .14); }
+.body .col { display: flex; flex-direction: column; align-items: center; gap: calc(var(--m) * .1); }
 .test {
   width: calc(var(--m) * .36); height: calc(var(--m) * .36); border-radius: 50%;
   background: #f5f5f5; border: 1px solid #888; display: grid; place-items: center;
@@ -210,7 +203,7 @@ body {
 .dead .lcd { color: transparent; text-shadow: none; }
 
 .cover {
-  width: calc(100% - 1px); height: calc(var(--m) * 4.6);
+  width: calc(100% - 1px); height: calc(var(--m) * 3);
   background: repeating-linear-gradient(0deg, #d6d6d2 0 2px, #e2e2de 2px 10px);
   border: 1px dashed #b5b5b0; border-radius: 3px;
   display: grid; place-items: center;
@@ -221,7 +214,7 @@ body {
 .lbl {
   margin-top: calc(var(--m) * .12);
   width: calc(100% - 3px);
-  height: clamp(58px, calc(var(--m) * 1.69), 104px); /* 35% shorter */
+  height: clamp(calc(var(--m) * 1.69), calc((var(--avail-h) - var(--m) * 17.1) / 4), calc(var(--m) * 2.6));
   background: var(--paper);
   border: 1px solid #c8c6bd;
   color: #1d1d1b;
@@ -268,3 +261,6 @@ input[type=text], input[type=number], select {
 .checks label { display: flex; gap: 6px; align-items: flex-start; font-size: 14px; padding: 4px 0; }
 .checks input { width: 18px; height: 18px; flex: none; margin-top: 1px; }
 .checks em { color: var(--muted); font-style: normal; font-size: 12px; display: block; }
+
+/* dvh = the real visible height on phones (without the browser bars) */
+@supports (height: 100dvh) { :root { --vh: 100dvh; } }

@@ -112,11 +112,6 @@ function dead(id) {
   return false;
 }
 
-function screws(n, top) {
-  const s = '<i></i>'.repeat(n);
-  return top && n === 2 ? `<span>L</span>${s}<span>N</span>` : s;
-}
-
 function faceHTML(d) {
   switch (d.type) {
     case 'main':
@@ -151,14 +146,10 @@ function slotHTML(id, w) {
   if (d.type === 'relay') sub = `${d.umin}–${d.umax} V · ${d.delay} s`;
 
   const cls = ['slot', d.on || d.type === 'relay' ? 'on' : '', dead(id) ? 'dead' : ''].join(' ');
-  const top = d.type === 'main' || d.type === 'relay';
-  const n = w >= 2 ? 2 : 1;
   return `<div class="${cls}" style="--w:${w}" data-id="${id}" role="button" tabindex="0" aria-label="Edit ${id}: ${esc(d.label)}">
       <span class="${numCls}" style="${numStyle}">${id}</span>
       <div class="mod">
-        <div class="term">${screws(n, top)}</div>
         <div class="face">${faceHTML(d)}</div>
-        <div class="term">${screws(n, false)}</div>
       </div>
       <div class="lbl">${esc(d.label)}${sub ? `<span class="sub">${esc(sub)}</span>` : ''}</div>
     </div>`;
