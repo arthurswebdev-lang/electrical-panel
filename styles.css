@@ -69,6 +69,11 @@ body {
   padding-top: calc(var(--m) * .7);
   position: relative;
   box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  /* pinch zoom / pan is done in app.js with a transform */
+  touch-action: none;
+  transform-origin: 0 0;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
 }
 .logo {
   position: absolute; top: calc(var(--m) * .14); left: calc(var(--m) * .5);

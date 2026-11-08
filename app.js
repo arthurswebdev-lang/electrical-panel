@@ -347,6 +347,105 @@ importFile.addEventListener('change', async () => {
   moreBtn.setAttribute('aria-expanded', 'true');
 });
 
+/* ---------- pinch zoom and pan ----------
+ * Two fingers: zoom (1x–4x) around the fingers. One finger: move the
+ * zoomed panel. Mac trackpad pinch (ctrl + wheel) also zooms.
+ * Pinching back to 1x resets. A tap still opens a device, but not at
+ * the end of a swipe or pinch. */
+const box = document.getElementById('box');
+const MAX_ZOOM = 4;
+const view = { s: 1, x: 0, y: 0 };
+const pointers = new Map();
+let gesture = null;          // values at the start of the current gesture
+let moved = false;           // did this gesture move? then it is not a tap
+
+function clampView() {
+  view.s = Math.min(MAX_ZOOM, Math.max(1, view.s));
+  if (view.s === 1) { view.x = 0; view.y = 0; return; }
+  const w = box.offsetWidth, h = box.offsetHeight;
+  view.x = Math.min(0, Math.max(w - w * view.s, view.x));
+  view.y = Math.min(0, Math.max(h - h * view.s, view.y));
+}
+function applyView() {
+  clampView();
+  box.style.transform = view.s === 1 ? '' : `translate(${view.x}px, ${view.y}px) scale(${view.s})`;
+}
+// point on the screen -> point inside the box before zoom
+function boxPoint(clientX, clientY) {
+  const r = box.getBoundingClientRect();     // already includes the transform
+  return { x: (clientX - r.left) / view.s, y: (clientY - r.top) / view.s };
+}
+// zoom so that the box point under (clientX, clientY) stays under it
+function zoomAt(clientX, clientY, newScale, anchor = boxPoint(clientX, clientY)) {
+  const originX = box.getBoundingClientRect().left - view.x;
+  const originY = box.getBoundingClientRect().top - view.y;
+  view.s = Math.min(MAX_ZOOM, Math.max(1, newScale));
+  view.x = clientX - originX - anchor.x * view.s;
+  view.y = clientY - originY - anchor.y * view.s;
+  applyView();
+}
+
+function startGesture() {
+  const pts = [...pointers.values()];
+  if (pts.length >= 2) {
+    const [a, b] = pts;
+    const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    gesture = { pinch: true, dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, scale: view.s, anchor: boxPoint(mid.x, mid.y) };
+  } else if (pts.length === 1) {
+    gesture = { pinch: false, px: pts[0].x, py: pts[0].y, x: view.x, y: view.y };
+  } else {
+    gesture = null;
+  }
+}
+
+box.addEventListener('pointerdown', e => {
+  if (pointers.size === 0) moved = false;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY });
+  if (pointers.size >= 2) moved = true;      // a pinch is never a tap
+  startGesture();
+});
+window.addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId);
+  if (!p || !gesture) return;
+  p.x = e.clientX; p.y = e.clientY;
+  if (Math.hypot(p.x - p.x0, p.y - p.y0) > 8) moved = true;
+  const pts = [...pointers.values()];
+  if (gesture.pinch && pts.length >= 2) {
+    const [a, b] = pts;
+    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+    zoomAt((a.x + b.x) / 2, (a.y + b.y) / 2, gesture.scale * dist / gesture.dist, gesture.anchor);
+  } else if (!gesture.pinch && view.s > 1) {
+    view.x = gesture.x + (p.x - gesture.px);
+    view.y = gesture.y + (p.y - gesture.py);
+    applyView();
+  }
+});
+function endPointer(e) {
+  if (!pointers.delete(e.pointerId)) return;
+  if (view.s < 1.05) { view.s = 1; applyView(); }   // snap back to normal size
+  startGesture();                                 // continue with the fingers left
+}
+window.addEventListener('pointerup', endPointer);
+window.addEventListener('pointercancel', endPointer);
+
+// after a swipe or pinch, the browser may still send a click: ignore it
+box.addEventListener('click', e => {
+  if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
+}, true);
+
+// Mac trackpad pinch arrives as wheel events with ctrl pressed
+box.addEventListener('wheel', e => {
+  if (!e.ctrlKey) return;
+  e.preventDefault();
+  zoomAt(e.clientX, e.clientY, view.s * Math.exp(-e.deltaY / 100));
+}, { passive: false });
+
+// stop Safari's own page zoom so only the panel zooms
+for (const type of ['gesturestart', 'gesturechange']) {
+  document.addEventListener(type, e => e.preventDefault(), { passive: false });
+}
+window.addEventListener('resize', () => applyView());
+
 /* ---------- start ---------- */
 async function init() {
   render();                 // draw defaults at once
