@@ -221,6 +221,8 @@ function openEditor(id) {
 }
 
 dlg.addEventListener('close', () => {
+  // the browser puts focus back on the tapped device; drop it so no ring stays
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
   if (dlg.returnValue !== 'save' || !editing) { editing = null; return; }
   const id = editing, d = state[id];
   const f = new FormData(document.getElementById('dlgForm'));
