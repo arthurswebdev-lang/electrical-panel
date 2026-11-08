@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Home Electrical Panel</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1c1c1b">
+
+<!-- iOS installability -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Panel">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+
+<header>
+  <h1>Home Electrical Panel</h1>
+  <p>ABB enclosure · 48 modules (4 rows × 12) · tap a device to edit it</p>
+</header>
+
+<div class="tools">
+  <button class="btn" id="exportBtn" type="button">Export</button>
+  <button class="btn" id="importBtn" type="button">Import</button>
+  <button class="btn" id="resetBtn" type="button">Reset</button>
+  <input type="file" id="importFile" accept="application/json,.json" hidden>
+</div>
+
+<div class="box" id="box">
+  <div class="logo">ABB</div>
+  <div class="frame" id="frame"></div>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlgForm">
+    <div class="dh"><h2 id="dlgTitle" tabindex="-1"></h2><p id="dlgSub"></p></div>
+    <div class="db" id="dlgBody"></div>
+    <div class="df">
+      <button class="btn" value="cancel" type="submit">Cancel</button>
+      <button class="btn primary" value="save" type="submit" id="saveBtn">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js?v=1"></script>
+</body>
+</html>
