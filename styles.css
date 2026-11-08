@@ -31,6 +31,7 @@
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+html, body { overscroll-behavior: none; } /* no bounce: the panel fits one screen */
 body {
   margin: 0;
   background: var(--page);
@@ -262,5 +263,6 @@ input[type=text], input[type=number], select {
 .checks input { width: 18px; height: 18px; flex: none; margin-top: 1px; }
 .checks em { color: var(--muted); font-style: normal; font-size: 12px; display: block; }
 
-/* dvh = the real visible height on phones (without the browser bars) */
-@supports (height: 100dvh) { :root { --vh: 100dvh; } }
+/* svh = screen height with the browser bars shown. It does not change
+   while scrolling (dvh does), so the panel size stays stable. */
+@supports (height: 100svh) { :root { --vh: 100svh; } }
