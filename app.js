@@ -151,7 +151,7 @@ function slotHTML(id, w) {
       <div class="mod">
         <div class="face">${faceHTML(d)}</div>
       </div>
-      <div class="lbl">${esc(d.label)}${sub ? `<span class="sub">${esc(sub)}</span>` : ''}</div>
+      <div class="lbl"><span class="t">${esc(d.label)}</span>${sub ? `<span class="sub">${esc(sub)}</span>` : ''}</div>
     </div>`;
 }
 
@@ -159,7 +159,32 @@ function render() {
   document.getElementById('frame').innerHTML = LAYOUT.map(row =>
     `<div class="row"><div class="rail"></div>${row.map(([id, w]) => slotHTML(id, w)).join('')}</div>`
   ).join('');
+  fitLabels();
 }
+
+/* Keep every label on one line: shrink the font until the text
+   fits the label height. Runs after each render and on resize. */
+function fitLabels() {
+  for (const lbl of document.querySelectorAll('#frame .lbl')) {
+    const cs = getComputedStyle(lbl);
+    const avail = lbl.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    for (const line of lbl.querySelectorAll('.t, .sub')) {
+      line.style.fontSize = '';                      // start from the normal size
+      if (avail <= 0) continue;
+      let size = parseFloat(getComputedStyle(line).fontSize);
+      // text length does not scale exactly with font size, so repeat a few times
+      for (let i = 0; i < 6 && line.offsetHeight > avail && size > 3; i++) {
+        size = Math.max(3, Math.floor(size * avail / line.offsetHeight * 0.98 * 10) / 10);
+        line.style.fontSize = size + 'px';
+      }
+    }
+  }
+}
+let fitFrame = 0;
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(fitFrame);
+  fitFrame = requestAnimationFrame(fitLabels);
+});
 
 /* ---------- edit dialog ---------- */
 const dlg = document.getElementById('dlg');
