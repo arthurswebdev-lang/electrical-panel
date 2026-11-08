@@ -14,12 +14,19 @@
 <meta name="apple-mobile-web-app-title" content="Panel">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
 
 <div class="box" id="box">
   <div class="logo">ABB</div>
+  <button class="more" id="moreBtn" type="button" aria-label="Options" aria-haspopup="menu" aria-expanded="false"><i></i><i></i><i></i></button>
+  <div class="menu" id="menu" role="menu" hidden>
+    <button type="button" role="menuitem" id="exportBtn">Export to JSON</button>
+    <button type="button" role="menuitem" id="importBtn">Import from JSON</button>
+    <p class="menu-note" id="menuNote"></p>
+  </div>
+  <input type="file" id="importFile" accept="application/json,.json" hidden>
   <div class="frame" id="frame"></div>
 </div>
 
@@ -34,6 +41,6 @@
   </form>
 </dialog>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

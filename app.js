@@ -259,6 +259,67 @@ frame.addEventListener('keydown', e => {
   if (s && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openEditor(s.dataset.id); }
 });
 
+/* ---------- options menu: export / import JSON ---------- */
+const moreBtn = document.getElementById('moreBtn');
+const menu = document.getElementById('menu');
+const menuNote = document.getElementById('menuNote');
+
+function setMenu(open) {
+  menu.hidden = !open;
+  moreBtn.setAttribute('aria-expanded', String(open));
+  if (open) menuNote.textContent = '';
+}
+moreBtn.addEventListener('click', e => { e.stopPropagation(); setMenu(menu.hidden); });
+// a tap outside the open menu only closes it (it does not open a device)
+document.addEventListener('click', e => {
+  if (menu.hidden || menu.contains(e.target) || moreBtn.contains(e.target)) return;
+  e.stopPropagation();
+  e.preventDefault();
+  setMenu(false);
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+document.getElementById('exportBtn').addEventListener('click', async () => {
+  const name = `panel-${new Date().toISOString().slice(0, 10)}.json`;
+  const file = new File([JSON.stringify(state, null, 2)], name, { type: 'application/json' });
+  setMenu(false);
+  // iPhone / iPad: the share sheet offers "Save to Files", AirDrop, Telegram ...
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file] }); return; }
+    catch (e) { if (e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(file);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+
+const importFile = document.getElementById('importFile');
+document.getElementById('importBtn').addEventListener('click', () => importFile.click());
+importFile.addEventListener('change', async () => {
+  const file = importFile.files[0];
+  importFile.value = '';
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || typeof data !== 'object' || !data.Q1 || !data.QF1) throw new Error('not a panel file');
+    const base = defaults();
+    merge(base, data);
+    state = base;
+    await save();
+    render();
+    menuNote.textContent = 'Imported ✓';
+  } catch (e) {
+    console.error('Import failed', e);
+    menuNote.textContent = 'This file is not a panel export.';
+  }
+  menu.hidden = false;
+  moreBtn.setAttribute('aria-expanded', 'true');
+});
+
 /* ---------- start ---------- */
 async function init() {
   render();                 // draw defaults at once

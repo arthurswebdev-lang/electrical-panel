@@ -68,6 +68,38 @@ body {
   font-weight: 900; letter-spacing: -.04em; color: var(--abb);
   font-size: calc(var(--m) * .38); line-height: 1;
 }
+
+/* "..." options button, top right of the enclosure */
+.more {
+  position: absolute; top: calc(var(--m) * .35); right: calc(var(--m) * .5);
+  transform: translateY(-50%);
+  width: clamp(20px, calc(var(--m) * .5), 30px); height: clamp(20px, calc(var(--m) * .5), 30px);
+  border-radius: 50%; border: 1px solid #b9b9b4; background: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 2px;
+  padding: 0; cursor: pointer; z-index: 3;
+  -webkit-tap-highlight-color: transparent;
+}
+.more::before { content: ""; position: absolute; inset: -10px; } /* bigger touch area */
+.more i { width: 3px; height: 3px; border-radius: 50%; background: #444; }
+.more[aria-expanded="true"] { background: #e6e6e2; }
+.menu {
+  position: absolute; z-index: 4;
+  top: calc(var(--m) * .35 + 18px); right: calc(var(--m) * .5);
+  min-width: 190px; padding: 6px;
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+}
+.menu[hidden] { display: none; }
+.menu button {
+  display: block; width: 100%; text-align: left;
+  font: inherit; font-size: 15px; color: inherit;
+  background: none; border: 0; border-radius: 8px;
+  padding: 10px 12px; cursor: pointer;
+}
+.menu button:hover, .menu button:focus-visible { background: var(--page); outline: none; }
+.menu-note { margin: 4px 12px 6px; font-size: 13px; color: var(--muted); }
+.menu-note:empty { display: none; }
 .frame {
   background: var(--frame);
   border: 1px solid var(--box-edge);
