@@ -37,10 +37,6 @@ body {
     calc(16px + env(safe-area-inset-left, 0px));
   touch-action: manipulation; /* no double-tap zoom */
 }
-header, .tools, .legend { width: calc(var(--m) * 13.6); max-width: 100%; margin: 0 auto; }
-h1 { font-size: 20px; margin: 0 0 2px; }
-header p { margin: 0; color: var(--muted); font-size: 13px; }
-.tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px auto 14px; }
 .btn {
   font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 8px;
   border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer;
@@ -225,7 +221,7 @@ header p { margin: 0; color: var(--muted); font-size: 13px; }
 .lbl {
   margin-top: calc(var(--m) * .12);
   width: calc(100% - 3px);
-  height: clamp(90px, calc(var(--m) * 2.6), 160px);
+  height: clamp(58px, calc(var(--m) * 1.69), 104px); /* 35% shorter */
   background: var(--paper);
   border: 1px solid #c8c6bd;
   color: #1d1d1b;
@@ -241,12 +237,6 @@ header p { margin: 0; color: var(--muted); font-size: 13px; }
 .slot:not(.on) .lbl, .slot.dead .lbl { color: #a9a7a0; text-decoration: line-through; }
 .blank .lbl { visibility: hidden; }
 
-.legend {
-  margin-top: 16px;
-  display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted);
-}
-.legend b { color: var(--ink); }
-.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; }
 
 /* ---------- edit dialog ---------- */
 dialog {

@@ -168,13 +168,6 @@ function render() {
   document.getElementById('frame').innerHTML = LAYOUT.map(row =>
     `<div class="row"><div class="rail"></div>${row.map(([id, w]) => slotHTML(id, w)).join('')}</div>`
   ).join('');
-
-  const legend = [1, 2, 3, 4, 5].map(i => {
-    const id = 'QD' + i;
-    return `<span><i class="dot" style="background:${QD_COLORS[i - 1]}"></i><b>${id}</b> ${esc(state[id].label)}</span>`;
-  }).join('');
-  document.getElementById('legend').innerHTML = legend +
-    `<span><i class="dot" style="background:#ff000f"></i>ON</span><span><i class="dot" style="background:#2a9d4b"></i>OFF</span>`;
 }
 
 /* ---------- edit dialog ---------- */
@@ -274,18 +267,6 @@ frame.addEventListener('keydown', e => {
   const s = e.target.closest('.slot[data-id]');
   if (s && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openEditor(s.dataset.id); }
 });
-
-/* ---------- reset ---------- */
-document.getElementById('resetBtn').onclick = async () => {
-  const b = document.getElementById('resetBtn');
-  if (b.dataset.confirm) {           // second tap = really reset
-    state = defaults(); await save(); render();
-    delete b.dataset.confirm; b.textContent = 'Reset';
-  } else {
-    b.dataset.confirm = '1'; b.textContent = 'Tap again to reset';
-    setTimeout(() => { delete b.dataset.confirm; b.textContent = 'Reset'; }, 3000);
-  }
-};
 
 /* ---------- start ---------- */
 async function init() {
