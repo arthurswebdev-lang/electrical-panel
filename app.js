@@ -275,47 +275,7 @@ frame.addEventListener('keydown', e => {
   if (s && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openEditor(s.dataset.id); }
 });
 
-/* ---------- export / import / reset ---------- */
-document.getElementById('exportBtn').onclick = async () => {
-  const name = `panel-${new Date().toISOString().slice(0, 10)}.json`;
-  const json = JSON.stringify(state, null, 2);
-  const file = new File([json], name, { type: 'application/json' });
-  // iPhone home-screen app: the share sheet lets you "Save to Files" or send it
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: name }); return; }
-    catch (e) { if (e.name === 'AbortError') return; }
-  }
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(file);
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-};
-function flash(btn, text) {
-  const old = btn.dataset.text || btn.textContent;
-  btn.dataset.text = old;
-  btn.textContent = text;
-  setTimeout(() => { btn.textContent = old; }, 2500);
-}
-const importFile = document.getElementById('importFile');
-document.getElementById('importBtn').onclick = () => importFile.click();
-importFile.onchange = async () => {
-  const file = importFile.files[0];
-  if (!file) return;
-  try {
-    const data = JSON.parse(await file.text());
-    const base = defaults();
-    merge(base, data);
-    state = base;
-    await save();
-    render();
-    flash(document.getElementById('importBtn'), 'Imported ✓');
-  } catch (e) {
-    console.error('Import failed', e);
-    flash(document.getElementById('importBtn'), 'Import failed');
-  }
-  importFile.value = '';
-};
+/* ---------- reset ---------- */
 document.getElementById('resetBtn').onclick = async () => {
   const b = document.getElementById('resetBtn');
   if (b.dataset.confirm) {           // second tap = really reset
