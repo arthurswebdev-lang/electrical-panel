@@ -260,6 +260,9 @@ body {
   border: 1px solid #c8c6bd;
   color: #1d1d1b;
   writing-mode: vertical-rl;
+  /* lay every glyph on its side, emoji too; otherwise emoji stay upright
+     and the 180° turn below puts them upside down */
+  text-orientation: sideways;
   transform: rotate(180deg);
   padding: 6px 2px;
   font-size: clamp(10px, calc(var(--m) * .27), 14px);
