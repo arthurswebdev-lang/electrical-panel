@@ -1,4 +1,4 @@
-const CACHE_NAME = "electrical-panel-v11"; // bump on every deploy
+const CACHE_NAME = "electrical-panel-v12"; // bump on every deploy
 const ASSETS = [
   "./",
   "./index.html",

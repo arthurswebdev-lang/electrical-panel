@@ -298,6 +298,7 @@ function setMenu(open) {
 }
 moreBtn.addEventListener('click', e => { e.stopPropagation(); setMenu(menu.hidden); });
 // a tap outside the open menu only closes it (it does not open a device)
+// (the hidden file input lives inside the menu, so opening the file picker is not blocked)
 document.addEventListener('click', e => {
   if (menu.hidden || menu.contains(e.target) || moreBtn.contains(e.target)) return;
   e.stopPropagation();
