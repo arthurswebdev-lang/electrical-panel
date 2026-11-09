@@ -142,7 +142,6 @@ function slotHTML(id, w) {
 
   let sub = '';
   if (d.type === 'rcd') { const l = breakersOf(id); sub = l.length ? compactList(l) : 'no breakers'; }
-  if (d.type === 'mcb' && d.qd) sub = d.qd;
   if (d.type === 'relay') sub = `${d.umin}–${d.umax} V · ${d.delay} s`;
 
   const cls = ['slot', d.on || d.type === 'relay' ? 'on' : '', dead(id) ? 'dead' : ''].join(' ');
