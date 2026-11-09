@@ -276,10 +276,15 @@ body {
   font-size: clamp(10px, calc(var(--m) * .27), 14px);
   line-height: 1.15;
   overflow: hidden;
+  /* center the text in both directions; in vertical writing a flex
+     "column" runs across the strip, so justify centers the lines across
+     it and align centers each line along it */
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
 }
 /* each part is one line; its length is measured by fitLabels() in app.js */
 .lbl .t, .lbl .sub { display: block; white-space: nowrap; inline-size: max-content; }
-.lbl .sub { color: #6b6a66; font-size: .85em; margin-right: 3px; }
+.lbl .sub { color: #6b6a66; font-size: .85em; }
 .slot:not(.on) .lbl, .slot.dead .lbl { color: #a9a7a0; text-decoration: line-through; }
 .blank .lbl { visibility: hidden; }
 
