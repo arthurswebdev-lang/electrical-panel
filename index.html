@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="Panel">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
-<link rel="stylesheet" href="styles.css?v=12">
+<link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
 
@@ -23,8 +23,8 @@
   <button class="more" id="moreBtn" type="button" aria-label="Options" aria-haspopup="menu" aria-expanded="false"><i></i><i></i><i></i></button>
   <div class="menu" id="menu" role="menu" hidden>
     <button type="button" role="menuitem" id="exportBtn">Export to JSON</button>
-    <button type="button" role="menuitem" id="importBtn">Import from JSON</button>
-    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <label role="menuitem" tabindex="0" id="importBtn" for="importFile">Import from JSON</label>
+    <input type="file" id="importFile" class="file-input" accept=".json,application/json">
     <p class="menu-note" id="menuNote"></p>
   </div>
   <div class="frame" id="frame"></div>
@@ -41,6 +41,6 @@
   </form>
 </dialog>
 
-<script src="app.js?v=12"></script>
+<script src="app.js?v=13"></script>
 </body>
 </html>

@@ -104,13 +104,16 @@ body {
   box-shadow: 0 12px 30px rgba(0,0,0,.25);
 }
 .menu[hidden] { display: none; }
-.menu button {
+.menu button, .menu label {
   display: block; width: 100%; text-align: left;
   font: inherit; font-size: 15px; color: inherit;
   background: none; border: 0; border-radius: 8px;
   padding: 10px 12px; cursor: pointer;
 }
-.menu button:hover, .menu button:focus-visible { background: var(--page); outline: none; }
+.menu button:hover, .menu button:focus-visible,
+.menu label:hover, .menu label:focus-visible { background: var(--page); outline: none; }
+/* not display:none: iPhone opens the file picker more reliably this way */
+.file-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .menu-note { margin: 4px 12px 6px; font-size: 13px; color: var(--muted); }
 .menu-note:empty { display: none; }
 .frame {

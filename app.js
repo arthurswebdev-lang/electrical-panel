@@ -326,7 +326,11 @@ document.getElementById('exportBtn').addEventListener('click', async () => {
 });
 
 const importFile = document.getElementById('importFile');
-document.getElementById('importBtn').addEventListener('click', () => importFile.click());
+// the menu item is a <label for="importFile">: a tap opens the file picker natively;
+// Enter / Space opens it from the keyboard
+document.getElementById('importBtn').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); importFile.click(); }
+});
 importFile.addEventListener('change', async () => {
   const file = importFile.files[0];
   importFile.value = '';
